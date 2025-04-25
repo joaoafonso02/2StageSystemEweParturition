@@ -1,0 +1,3 @@
+[console_scripts]
+eml-mel-filterbank = emlearn.tools.mel_filterbank:main
+eml-window-function = emlearn.tools.window_function:main

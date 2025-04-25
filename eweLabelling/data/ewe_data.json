@@ -1,0 +1,786 @@
+{
+    "Animal_20333": {
+        "collar": "D4FB2267FEE3",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-05-27T14:41:00",
+        "lambing_times": [
+            "2024-05-22T22:01:36",
+            "2024-05-22T23:56:36"
+        ],
+        "lambing_type": "Double",
+        "assistance": "",
+        "comments": "Natural",
+        "problems": ""
+    },
+    "Animal_0022": {
+        "collar": "EFFB68709EC6",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-05-08T14:21:00",
+        "lambing_times": [
+            "2024-05-04T21:55:26",
+            "2024-05-04T22:29:00"
+        ],
+        "lambing_type": "Double",
+        "assistance": "Second",
+        "comments": "First natural, second with help",
+        "problems": "none"
+    },
+    "Animal_20024": {
+        "collar": "EFFB68709EC6",
+        "placement": "2024-05-08T15:20:00",
+        "removal": "2024-05-21T09:33:00",
+        "lambing_times": [
+            "2024-05-16T19:29:30",
+            "2024-05-16T19:45:08"
+        ],
+        "lambing_type": "Double",
+        "assistance": "",
+        "comments": "Both natural",
+        "problems": ""
+    },
+    "Animal_0182": {
+        "collar": "F32F1EAC1A03",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-04-30T21:29:00",
+        "lambing_times": [
+            "2024-04-29T03:09:06",
+            "2024-04-29T03:11:08"
+        ],
+        "lambing_type": "Double",
+        "assistance": "Both",
+        "comments": "First assisted, second assisted; SN \"I corrected the date from 28/4/24 to 29/4/24 for lambing the time was correct, correction was done 30/4/24 at 4:45pm. Currently exporting videos and saw the mistake!\"",
+        "problems": "none"
+    },
+    "Animal_20360": {
+        "collar": "F32F1EAC1A03",
+        "placement": "2024-04-30T22:14:00",
+        "removal": "2024-05-08T14:21:00",
+        "lambing_times": [
+            "2024-05-04T09:37:21"
+        ],
+        "lambing_type": "Single",
+        "assistance": "First",
+        "comments": "Asisted; SN \"collar was placed wrong, I corrected making sure the arrow is pointing downwards, 5/03/2024  1:34:00 PM\"; SN Changed date of lambing from 5/5/24 to 4/5/24, corrected 5/5/24 16:33",
+        "problems": "InvCollar"
+    },
+    "Animal_10345": {
+        "collar": "F32F1EAC1A03",
+        "placement": "2024-05-08T15:20:00",
+        "removal": "2024-05-10T19:26:00",
+        "lambing_times": [
+            "2024-05-09T10:04:50",
+            "2024-05-09T10:12:05"
+        ],
+        "lambing_type": "Double",
+        "assistance": "",
+        "comments": "Aided, intervention from 10:04:05",
+        "problems": ""
+    },
+    "Animal_20428": {
+        "collar": "F32F1EAC1A03",
+        "placement": "2024-05-10T21:10:00",
+        "removal": "2024-05-21T09:33:00",
+        "lambing_times": [
+            "2024-05-13T16:08:00",
+            "2024-05-13T16:46:00",
+            "2024-05-13T16:47:00"
+        ],
+        "lambing_type": "Triple",
+        "assistance": "",
+        "comments": "Farm managers notes \"expecting three lambs\", all with help",
+        "problems": ""
+    },
+    "Animal_10435": {
+        "collar": "D25FB6929885",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-05-10T19:26:00",
+        "lambing_times": [
+            "2024-05-07T18:41:59",
+            "2024-05-07T20:00:00"
+        ],
+        "lambing_type": "Double",
+        "assistance": "Second",
+        "comments": "Farm managers notes \"only one lamb is expected\", First natural, second aided",
+        "problems": "none"
+    },
+    "Animal_10244": {
+        "collar": "D25FB6929885",
+        "placement": "2024-05-10T21:10:00",
+        "removal": "2024-05-16T14:41:00",
+        "lambing_times": [
+            "2024-05-13T04:12:00",
+            "2024-05-13T05:12:00"
+        ],
+        "lambing_type": "Double",
+        "assistance": "",
+        "comments": "Farm managers notes \"expecting two lambs\"",
+        "problems": ""
+    },
+    "Animal_0268": {
+        "collar": "C93786F37B57",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-04-29T13:50:00",
+        "lambing_times": [
+            "2024-04-26T11:51:15",
+            "2024-04-26T12:11:43"
+        ],
+        "lambing_type": "Double",
+        "assistance": "First",
+        "comments": "first assisted, second natural",
+        "problems": "none"
+    },
+    "Animal_20402": {
+        "collar": "C93786F37B57",
+        "placement": "2024-04-29T15:23:00",
+        "removal": "2024-05-10T19:20:00",
+        "lambing_times": [
+            "2024-05-08T23:17:20"
+        ],
+        "lambing_type": "Single",
+        "assistance": "Both",
+        "comments": "Farm managers notes \"only one lamb is expected\", Aided, intervention from 23:16:00",
+        "problems": "none"
+    },
+    "Animal_30739": {
+        "collar": "C93786F37B57",
+        "placement": "2024-05-10T21:10:00",
+        "removal": "2024-05-21T09:33:00",
+        "lambing_times": [
+            "2024-05-17T21:02:30"
+        ],
+        "lambing_type": "Single",
+        "assistance": "",
+        "comments": "",
+        "problems": ""
+    },
+    "Animal_0350": {
+        "collar": "E67E79D0D2F7",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-04-26T19:30:00",
+        "lambing_times": [
+            "2024-04-25T13:08:30",
+            "2024-04-25T14:21:06"
+        ],
+        "lambing_type": "Double",
+        "assistance": "Second",
+        "comments": "First lamb natural, second assisted",
+        "problems": "none"
+    },
+    "Animal_00135": {
+        "collar": "E67E79D0D2F7",
+        "placement": "2024-04-26T20:45:00",
+        "removal": "2024-05-04T10:24:00",
+        "lambing_times": [
+            "2024-05-02T06:31:00"
+        ],
+        "lambing_type": "Single",
+        "assistance": "None",
+        "comments": "Farm managers notes \"only one lamb is expected\"",
+        "problems": "none"
+    },
+    "Animal_00359": {
+        "collar": "E67E79D0D2F7",
+        "placement": "2024-05-05T14:40:00",
+        "removal": "2024-05-16T14:44:00",
+        "lambing_times": [
+            "2024-05-10T19:26:00"
+        ],
+        "lambing_type": "Single",
+        "assistance": "",
+        "comments": "With rapid help",
+        "problems": "none"
+    },
+    "Animal_0230": {
+        "collar": "E11D6666ED17",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-05-04T13:57:00",
+        "lambing_times": [
+            "2024-05-02T21:49:44",
+            "2024-05-02T22:30:02"
+        ],
+        "lambing_type": "Double",
+        "assistance": "None",
+        "comments": "",
+        "problems": "none"
+    },
+    "Animal_20247": {
+        "collar": "E11D6666ED17",
+        "placement": "2024-05-05T14:40:00",
+        "removal": "2024-05-16T14:38:00",
+        "lambing_times": [
+            "2024-05-08T02:41:47",
+            "2024-05-08T02:52:08"
+        ],
+        "lambing_type": "Double",
+        "assistance": "None",
+        "comments": "Both natural",
+        "problems": "none"
+    },
+    "Animal_10359": {
+        "collar": "F199295AE047",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-05-08T14:21:00",
+        "lambing_times": [
+            "2024-05-03T19:16:55",
+            "2024-05-03T19:45:25"
+        ],
+        "lambing_type": "Double",
+        "assistance": "Second",
+        "comments": "First natural, second with help",
+        "problems": "none"
+    },
+    "Animal_20405": {
+        "collar": "F199295AE047",
+        "placement": "2024-05-08T15:13:00",
+        "removal": "2024-05-16T14:38:00",
+        "lambing_times": [
+            "2024-05-10T04:34:07",
+            "2024-05-10T04:51:14"
+        ],
+        "lambing_type": "Double",
+        "assistance": "Both",
+        "comments": "Both aided, intervention from 4:32:20",
+        "problems": ""
+    },
+    "Animal_0091": {
+        "collar": "FF6C81A617AF",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-05-02T21:30:00",
+        "lambing_times": [
+            "2024-04-30T21:08:15",
+            "2024-04-30T22:28:10",
+            "2024-04-30T22:40:03"
+        ],
+        "lambing_type": "Triple",
+        "assistance": "Second",
+        "comments": "First natural, second with help",
+        "problems": "none"
+    },
+    "Animal_10084": {
+        "collar": "FF6C81A617AF",
+        "placement": "2024-05-02T22:11:00",
+        "removal": "2024-05-16T14:37:00",
+        "lambing_times": [
+            "2024-05-12T21:43:00",
+            "2024-05-12T21:45:00",
+            "2024-05-12T21:47:00"
+        ],
+        "lambing_type": "Triple",
+        "assistance": "",
+        "comments": "All assisted",
+        "problems": "none"
+    },
+    "Animal_20098": {
+        "collar": "E529A33F92FC",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-05-02T21:30:00",
+        "lambing_times": [
+            "2024-05-02T00:52:20",
+            "2024-05-02T01:02:20"
+        ],
+        "lambing_type": "Double",
+        "assistance": "None",
+        "comments": "Both natural",
+        "problems": "none"
+    },
+    "Animal_20300": {
+        "collar": "E529A33F92FC",
+        "placement": "2024-05-02T22:11:00",
+        "removal": "2024-05-10T19:18:00",
+        "lambing_times": [
+            "2024-05-09T16:05:00"
+        ],
+        "lambing_type": "Single",
+        "assistance": "None",
+        "comments": "Natural",
+        "problems": "none"
+    },
+    "Animal_30341": {
+        "collar": "E529A33F92FC",
+        "placement": "2024-05-10T21:10:00",
+        "removal": "2024-05-21T09:33:00",
+        "lambing_times": [
+            "2024-05-18T15:02:20"
+        ],
+        "lambing_type": "Single",
+        "assistance": "",
+        "comments": "Help from 14:55",
+        "problems": ""
+    },
+    "Animal_0402": {
+        "collar": "CDC59811208C",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-05-02T21:30:00",
+        "lambing_times": [
+            "2024-04-30T06:31:11",
+            "2024-04-30T06:32:49"
+        ],
+        "lambing_type": "Double",
+        "assistance": "Both",
+        "comments": "Both assisted, probably better to exclude from model because sheep was to quiet",
+        "problems": "atypical"
+    },
+    "Animal_20361": {
+        "collar": "CDC59811208C",
+        "placement": "2024-05-02T22:11:00",
+        "removal": "2024-05-08T14:21:00",
+        "lambing_times": [
+            "2024-05-04T23:35:00",
+            "2024-05-04T23:42:00"
+        ],
+        "lambing_type": "Double",
+        "assistance": "Both",
+        "comments": "Both assisted.",
+        "problems": "none"
+    },
+    "Animal_20193": {
+        "collar": "CDC59811208C",
+        "placement": "2024-05-08T15:20:00",
+        "removal": "2024-05-16T14:37:00",
+        "lambing_times": [
+            "2024-05-09T11:08:50",
+            "2024-05-09T11:57:52"
+        ],
+        "lambing_type": "Double",
+        "assistance": "Both",
+        "comments": "Both assisted. Intervention from 11:06:40",
+        "problems": ""
+    },
+    "Animal_0022A": {
+        "collar": "CAE57B810884",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-05-16T14:37:00",
+        "lambing_times": [
+            "2024-05-08T02:09:30",
+            "2024-05-08T02:14:15"
+        ],
+        "lambing_type": "Double",
+        "assistance": "None",
+        "comments": "",
+        "problems": "none"
+    },
+    "Animal_0290": {
+        "collar": "C2A6EB3E97CE",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-05-08T14:21:00",
+        "lambing_times": [
+            "2024-05-06T16:06:00",
+            "2024-05-06T16:41:30"
+        ],
+        "lambing_type": "Double",
+        "assistance": "None",
+        "comments": "Both Natural",
+        "problems": "none"
+    },
+    "Animal_20191": {
+        "collar": "C2A6EB3E97CE",
+        "placement": "2024-05-21T20:27:00",
+        "removal": "2024-05-27T14:41:00",
+        "lambing_times": [
+            "2024-05-24T16:04:52",
+            "2024-05-24T16:15:00",
+            "2024-05-24T16:26:30"
+        ],
+        "lambing_type": "Triple",
+        "assistance": "",
+        "comments": "Natural; SN \"the pen was not 21, it was 23. I change 5/27/2024 3:11PM\"",
+        "problems": ""
+    },
+    "Animal_0308": {
+        "collar": "EEFE1C0DE6F2",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-04-26T19:10:00",
+        "lambing_times": [
+            "2024-04-25T13:30:53",
+            "2024-04-25T15:27:40"
+        ],
+        "lambing_type": "Double",
+        "assistance": "None",
+        "comments": "Both natural",
+        "problems": "none"
+    },
+    "Animal_10119": {
+        "collar": "EEFE1C0DE6F2",
+        "placement": "2024-04-26T20:45:00",
+        "removal": "2024-05-10T19:18:00",
+        "lambing_times": [
+            "2024-05-09T09:13:00"
+        ],
+        "lambing_type": "Single",
+        "assistance": "First",
+        "comments": "Farm managers notes \"only one lamb is expected\"; SN \"collar was placed wrong, I corrected making sure the arrow is pointing downwards, 5/02/2024  1:20:00 PM\", better disconsider after 9:10:35, because had help and lady had to come there to allow lamb feeding",
+        "problems": "InvCollar"
+    },
+    "Animal_20315": {
+        "collar": "EEFE1C0DE6F2",
+        "placement": "2024-05-10T21:10:00",
+        "removal": "2024-05-16T14:42:00",
+        "lambing_times": [
+            "2024-05-12T14:10:00"
+        ],
+        "lambing_type": "Single",
+        "assistance": "",
+        "comments": "Natural, relevant to learning model",
+        "problems": "none"
+    },
+    "Animal_90208": {
+        "collar": "C0077C8DC4D3",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-05-05T14:05:00",
+        "lambing_times": [
+            "2024-05-04T07:53:37",
+            "2024-05-04T09:57:00"
+        ],
+        "lambing_type": "Double",
+        "assistance": "None",
+        "comments": "",
+        "problems": "none"
+    },
+    "Animal_10199": {
+        "collar": "C0077C8DC4D3",
+        "placement": "2024-05-05T14:40:00",
+        "removal": "2024-05-16T14:40:00",
+        "lambing_times": [
+            "2024-05-10T16:26:00",
+            "2024-05-10T17:07:00",
+            "2024-05-10T17:50:00"
+        ],
+        "lambing_type": "Triple",
+        "assistance": "",
+        "comments": "Farm managers notes \"expecting three lambs\", first with help",
+        "problems": "none"
+    },
+    "Animal_0102": {
+        "collar": "DB89BB3E6BF3",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-04-25T11:04:00",
+        "lambing_times": [
+            "2024-04-23T19:00:00",
+            "2024-04-23T19:00:00"
+        ],
+        "lambing_type": "Double",
+        "assistance": "",
+        "comments": "Missed lambing from the video recording. Motion detection on the camera surveillance needs to be turned off (24/4/24; 9:00AM). Farm manager noted lambing (23/4/24; 7:00PM).",
+        "problems": "MissVideo"
+    },
+    "Animal_10239": {
+        "collar": "DB89BB3E6BF3",
+        "placement": "2024-04-25T21:32:00",
+        "removal": "2024-05-16T14:40:00",
+        "lambing_times": [
+            "2024-05-08T10:41:00",
+            "2024-05-08T11:37:30"
+        ],
+        "lambing_type": "Double",
+        "assistance": "None",
+        "comments": "SN \"collar was placed wrong, I corrected making sure the arrow is pointing downwards, 4/30/2024  12:24:00 PM\", both natural",
+        "problems": "InvCollar"
+    },
+    "Animal_0283": {
+        "collar": "FD731CBA7680",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-04-26T19:01:00",
+        "lambing_times": [
+            "2024-04-25T08:32:42",
+            "2024-04-25T08:48:20"
+        ],
+        "lambing_type": "Double",
+        "assistance": "First",
+        "comments": "First lamb assisted, second lamb natural.",
+        "problems": "none"
+    },
+    "Animal_10234": {
+        "collar": "FD731CBA7680",
+        "placement": "2024-04-26T20:45:00",
+        "removal": "2024-05-04T10:24:00",
+        "lambing_times": [
+            "2024-05-02T11:30:28"
+        ],
+        "lambing_type": "Single",
+        "assistance": "None",
+        "comments": "Farm managers notes \"only one lamb is expected\". Inverted collar; ; SN \"collar was placed wrong, saw it after lambing, 5/02/2024  1:33:00 PM\"",
+        "problems": "InvCollar"
+    },
+    "Animal_20167": {
+        "collar": "FD731CBA7680",
+        "placement": "2024-05-05T14:40:00",
+        "removal": "2024-05-08T14:21:00",
+        "lambing_times": [
+            "2024-05-06T20:38:00",
+            "2024-05-06T20:46:27"
+        ],
+        "lambing_type": "Double",
+        "assistance": "None",
+        "comments": "Both natural",
+        "problems": "none"
+    },
+    "Animal_20371": {
+        "collar": "FD731CBA7680",
+        "placement": "2024-05-08T15:20:00",
+        "removal": "2024-05-21T09:33:00",
+        "lambing_times": [
+            "2024-05-16T14:10:55",
+            "2024-05-16T15:44:30",
+            "2024-05-16T15:45:29"
+        ],
+        "lambing_type": "Triple",
+        "assistance": "",
+        "comments": "Farm managers notes \"expecting three lambs\", first natural, 2nd and 3rd assisted",
+        "problems": ""
+    },
+    "Animal_0404": {
+        "collar": "E364083AF87C",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-04-29T13:50:00",
+        "lambing_times": [
+            "2024-04-26T21:00:39",
+            "2024-04-26T21:17:36"
+        ],
+        "lambing_type": "Double",
+        "assistance": "Both",
+        "comments": "First assisted, second assisted",
+        "problems": "none"
+    },
+    "Animal_20045": {
+        "collar": "E364083AF87C",
+        "placement": "2024-04-29T15:23:00",
+        "removal": "2024-05-10T19:14:00",
+        "lambing_times": [
+            "2024-05-07T22:00:00"
+        ],
+        "lambing_type": "Single",
+        "assistance": "None",
+        "comments": "Farm managers notes \"only one lamb is expected\", No help; SN \"collar was placed wrong, I corrected making sure the arrow is pointing downwards, 5/02/2024  1:30:00 PM\", Natural",
+        "problems": "InvCollar"
+    },
+    "Animal_80726": {
+        "collar": "E6E4A48F10C1",
+        "placement": "2024-05-10T21:10:00",
+        "removal": "2024-05-21T09:33:00",
+        "lambing_times": [
+            "2024-05-16T08:12:00",
+            "2024-05-16T08:27:00"
+        ],
+        "lambing_type": "Double",
+        "assistance": "",
+        "comments": "SN\"changed the collar F8:7C to 10:C1 on 15/5/24 12:35\", both natural",
+        "problems": ""
+    },
+    "Animal_10289": {
+        "collar": "FC2172B97EA8",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-05-10T19:14:00",
+        "lambing_times": [
+            "2024-05-05T06:04:00",
+            "2024-05-05T06:28:00"
+        ],
+        "lambing_type": "Double",
+        "assistance": "Both",
+        "comments": "Both assisted.",
+        "problems": "none"
+    },
+    "Animal_30713": {
+        "collar": "FC2172B97EA8",
+        "placement": "2024-05-10T21:10:00",
+        "removal": "2024-05-16T14:44:00",
+        "lambing_times": [
+            "2024-05-11T07:34:00",
+            "2024-05-11T07:45:00"
+        ],
+        "lambing_type": "Double",
+        "assistance": "",
+        "comments": "Both Natural",
+        "problems": ""
+    },
+    "Animal_10329": {
+        "collar": "DFD7AEC9CE65",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-05-16T14:47:00",
+        "lambing_times": [
+            "2024-05-13T21:26:30",
+            "2024-05-13T22:08:30",
+            "2024-05-13T23:11:00"
+        ],
+        "lambing_type": "Triple",
+        "assistance": "",
+        "comments": "",
+        "problems": "none"
+    },
+    "Animal_0026": {
+        "collar": "C7F2D8E9B9F4",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-04-29T13:51:00",
+        "lambing_times": [
+            "2024-04-25T17:25:59",
+            "2024-04-25T18:28:35"
+        ],
+        "lambing_type": "Double",
+        "assistance": "None",
+        "comments": "Both natural",
+        "problems": "none"
+    },
+    "Animal_20839": {
+        "collar": "C7F2D8E9B9F4",
+        "placement": "2024-04-29T15:17:00",
+        "removal": "2024-04-30T21:41:00",
+        "lambing_times": [
+            "2024-04-29T23:14:21"
+        ],
+        "lambing_type": "Single",
+        "assistance": "None",
+        "comments": "First natural; Farm managers notes \"only one lamb is expected, SPAEL breed lamb\" ;SN \"collar was placed wrong, I noticed after lambing\"",
+        "problems": "InvCollar"
+    },
+    "Animal_00793": {
+        "collar": "C7F2D8E9B9F4",
+        "placement": "2024-04-30T22:13:00",
+        "removal": "2024-05-04T10:24:00",
+        "lambing_times": [
+            "2024-05-02T15:01:30"
+        ],
+        "lambing_type": "Single",
+        "assistance": "First",
+        "comments": "Inverted collar; SN \"collar was placed wrong, saw it after lambing, 5/03/2024  1:45:00 PM\", with strong help",
+        "problems": "InvCollar"
+    },
+        "Animal_00082": {
+            "collar": "C7F2D8E9B9F4",
+            "placement": "2024-05-05T14:40:00",
+            "removal": "2024-05-21T09:33:00",
+            "lambing_times": [
+                "2024-05-16T17:27:00",
+                "2024-05-16T17:46:15"
+            ],
+            "lambing_type": "Double",
+            "assistance": "",
+            "comments": "Both natural",
+            "problems": "none"
+        },
+    "Animal_0235": {
+        "collar": "D7435EF886F6",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-04-26T19:29:00",
+        "lambing_times": [
+            "2024-04-25T14:03:03",
+            "2024-04-25T16:01:37"
+        ],
+        "lambing_type": "Double",
+        "assistance": "First",
+        "comments": "First assisted, second natural",
+        "problems": "none"
+    },
+    "Animal_20290": {
+        "collar": "D7435EF886F6",
+        "placement": "2024-04-26T20:45:00",
+        "removal": "2024-04-30T21:32:00",
+        "lambing_times": [
+            "2024-04-29T11:56:27"
+        ],
+        "lambing_type": "Single",
+        "assistance": "First",
+        "comments": "Assisted; Farm managers notes \"only one lamb is expected\"; SN \"lambing time 4/29/2024  4:12:30 PM changed to 4/29/2024 11:56:27 AM corrected  5/06/2024 9:15:00 AM\"",
+        "problems": "none"
+    },
+    "Animal_00745": {
+        "collar": "D7435EF886F6",
+        "placement": "2024-04-30T22:13:00",
+        "removal": "2024-05-04T10:24:00",
+        "lambing_times": [
+            "2024-05-03T15:13:44"
+        ],
+        "lambing_type": "Single",
+        "assistance": "First",
+        "comments": "SN \"collar was placed wrong, I corrected making sure the arrow is pointing downwards, 5/02/2024 1:30:00 PM\", lamb With help",
+        "problems": "InvCollar"
+    },
+    "Animal_00194": {
+        "collar": "D7435EF886F6",
+        "placement": "2024-05-05T14:40:00",
+        "removal": "2024-05-08T14:21:00",
+        "lambing_times": [
+            "2024-05-06T21:15:00",
+            "2024-05-06T22:14:00"
+        ],
+        "lambing_type": "Double",
+        "assistance": "First",
+        "comments": "First assisted, second natural",
+        "problems": "none"
+    },
+    "Animal_20302": {
+        "collar": "D7435EF886F6",
+        "placement": "2024-05-08T15:20:00",
+        "removal": "2024-05-10T19:09:00",
+        "lambing_times": [
+            "2024-05-09T01:37:00",
+            "2024-05-09T01:39:00"
+        ],
+        "lambing_type": "Double",
+        "assistance": "Both",
+        "comments": "Aided in both, intervention from 1:36",
+        "problems": ""
+    },
+    "Animal_30433": {
+        "collar": "D7435EF886F6",
+        "placement": "2024-05-10T21:10:00",
+        "removal": "2024-05-21T09:33:00",
+        "lambing_times": [
+            "2024-05-19T05:00:00",
+            "2024-05-19T06:00:00"
+        ],
+        "lambing_type": "Double",
+        "assistance": "",
+        "comments": "both natural",
+        "problems": ""
+    },
+    "Animal_0132": {
+        "collar": "DB311ED1553E",
+        "placement": "2024-04-23T14:10:00",
+        "removal": "2024-04-29T13:50:00",
+        "lambing_times": [
+            "2024-04-28T14:18:53",
+            "2024-04-28T14:47:23"
+        ],
+        "lambing_type": "Double",
+        "assistance": "First",
+        "comments": "first assisted, second natural",
+        "problems": "none"
+    },
+    "Animal_00860": {
+        "collar": "DB311ED1553E",
+        "placement": "2024-04-29T15:23:00",
+        "removal": "2024-05-08T14:21:00",
+        "lambing_times": [
+            "2024-05-07T09:38:00"
+        ],
+        "lambing_type": "Single",
+        "assistance": "First",
+        "comments": "Farm managers notes \"only one lamb is expected\"; SN \"collar was placed wrong, I corrected making sure the arrow is pointing downwards, 5/02/2024 1:40:00 PM\", Assisted",
+        "problems": "InvCollar"
+    },
+    "Animal_10430": {
+        "collar": "DB311ED1553E",
+        "placement": "2024-05-08T15:20:00",
+        "removal": "2024-05-16T14:42:00",
+        "lambing_times": [
+            "2024-05-09T11:05:55",
+            "2024-05-09T11:38:00"
+        ],
+        "lambing_type": "Double",
+        "assistance": "Both",
+        "comments": "Aided in both, intervention from 10:55",
+        "problems": ""
+    },
+    "Animal_00112": {
+        "collar": "C7FC913A6A06",
+        "placement": "2024-04-25T21:40:00",
+        "removal": "2024-05-27T14:41:00",
+        "lambing_times": [
+            "2024-05-23T07:48:00",
+            "2024-05-23T08:48:00"
+        ],
+        "lambing_type": "Double",
+        "assistance": "",
+        "comments": "Assisted  first, second natural",
+        "problems": ""
+    }
+}
