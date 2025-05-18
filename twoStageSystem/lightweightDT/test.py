@@ -7,7 +7,7 @@ import pandas as pd
 from sklearn.preprocessing import minmax_scale
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier, BaggingClassifier
-from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, matthews_corrcoef
 from sklearn.metrics import accuracy_score, f1_score, recall_score, precision_score
 from imblearn.under_sampling import RandomUnderSampler
@@ -25,6 +25,7 @@ import psutil
 from sklearn.ensemble import GradientBoostingClassifier
 from tqdm import tqdm
 import optuna
+import time
 
 # Fix TensorFlow GPU initialization issues
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Reduce TensorFlow logging
@@ -53,14 +54,15 @@ except Exception as e:
 CHUNK_SIZE = 500000  # Adjust based on your system's memory capacity
 
 SAMPLE_RATES = [
-    ('0.5Hz', '2s'),     # 0.5 Hz = 1 sample every 2 seconds
-    ('1Hz', '1s'),       # 1 Hz = 1 sample per second
+    #('0.5Hz', '2s'),     # 0.5 Hz = 1 sample every 2 seconds
+    #('1Hz', '1s'),       # 1 Hz = 1 sample per second
     ('2Hz', '500ms'),    # 2 Hz = 2 samples per second
     #('3Hz', '333ms'),    # 3 Hz = 3 samples per second
 ]
 
 # Define window sizes to test
 WINDOW_SIZES_MINUTES = [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180]
+#WINDOW_SIZES_MINUTES = [165, 180]
 WINDOW_SIZES = [(min, min * 60) for min in WINDOW_SIZES_MINUTES]  # (minutes, seconds)
 
 # Create output directories
@@ -141,71 +143,146 @@ def optimize_threshold_for_class_balance(y_true, y_proba):
             
     return best_threshold
 
-def objective(trial, X, y, is_binary=True):
-    """Optuna objective for DecisionTreeClassifier optimization"""
-    # Define parameter search spaces
-    params = {
-        'max_depth': trial.suggest_int('max_depth', 10, 300),
-        'max_leaf_nodes': trial.suggest_int('max_leaf_nodes', 100, 1000),
-        'min_samples_split': trial.suggest_int('min_samples_split', 2, 20),
-        'min_samples_leaf': trial.suggest_int('min_samples_leaf', 1, 10),
-        'max_features': trial.suggest_categorical('max_features', ['sqrt', 'log2']),
-        'random_state': 42,
-        'class_weight': 'balanced'
-    }
-    
-    # Create and evaluate model
-    clf = DecisionTreeClassifier(**params)
-    
-    # Use appropriate scoring for binary/multiclass
-    scoring = 'f1_binary' if is_binary else 'f1_weighted'
-    
-    # Perform cross-validation
-    scores = cross_val_score(clf, X, y, cv=5, scoring=scoring, n_jobs=-1)
-    return scores.mean()
-
-def generate_models(n_input, n_output, X=None, y=None, light=False):
-    """Generate models with optional Optuna optimization"""
-    if light:
-        if X is not None and y is not None:
-            # Run Optuna optimization
-            study = optuna.create_study(direction='maximize')
-            study.optimize(lambda trial: objective(trial, X, y, is_binary=(n_output==2)), 
-                         n_trials=100, n_jobs=-1)
-            
-            # Get best parameters
-            best_params = study.best_params
-            best_params['random_state'] = 42
-            best_params['class_weight'] = 'balanced'
-            
-            print("Best parameters:", best_params)
-            print("Best F1 score:", study.best_value)
-            
-            models = [
-                ('DecisionTreeClassifier', DecisionTreeClassifier(**best_params))
-            ]
+def optimize_hyperparameters(X_train, y_train, X_val, y_val, model_type, is_binary=True, n_trials=15):
+    """Optimize hyperparameters using Optuna for a specific model type"""
+    def objective(trial):
+        if model_type == 'DecisionTreeClassifier':
+            params = {
+                'max_depth': trial.suggest_int('max_depth', 200, 300),
+                'max_features': trial.suggest_categorical('max_features', ['sqrt', 'log2', None]),
+                'max_leaf_nodes': trial.suggest_int('max_leaf_nodes', 600, 1000),
+                'min_samples_split': trial.suggest_int('min_samples_split', 2, 20),
+                'class_weight': 'balanced',
+                'random_state': 42
+            }
+            model = DecisionTreeClassifier(**params)
+        
+        elif model_type == 'RandomForestClassifier':
+            params = {
+                'n_estimators': trial.suggest_int('n_estimators', 10, 100),
+                'max_depth': trial.suggest_int('max_depth', 5, 150),
+                'max_features': trial.suggest_categorical('max_features', ['sqrt', 'log2', None]),
+                'min_samples_split': trial.suggest_int('min_samples_split', 2, 20),
+                'class_weight': 'balanced',
+                'random_state': 42
+            }
+            model = RandomForestClassifier(**params)
+        
+        elif model_type == 'ExtraTreesClassifier':
+            params = {
+                'n_estimators': trial.suggest_int('n_estimators', 10, 100),
+                'max_depth': trial.suggest_int('max_depth', 5, 150),
+                'max_features': trial.suggest_categorical('max_features', ['sqrt', 'log2', None]),
+                'class_weight': 'balanced',
+                'random_state': 42
+            }
+            model = ExtraTreesClassifier(**params)
+        
+        # elif model_type == 'Bagging':
+        #     params = {
+        #         'n_estimators': trial.suggest_int('n_estimators', 10, 100),
+        #         'max_samples': trial.suggest_float('max_samples', 0.5, 1.0),
+        #         'max_features': trial.suggest_float('max_features', 0.5, 1.0),
+        #         'random_state': 42
+        #     }
+        #     model = BaggingClassifier(**params)
+        
         else:
-            # Fallback to default parameters if no data provided
+            raise ValueError(f"Unknown model type: {model_type}")
+        
+        # Train and evaluate
+        model.fit(X_train, y_train)
+        if hasattr(model, "predict_proba") and is_binary:
+            val_proba = model.predict_proba(X_val)[:, 1]
+            best_threshold = optimize_threshold_for_class_balance(y_val, val_proba)
+            val_pred = (val_proba >= best_threshold).astype(int)
+        else:
+            val_pred = model.predict(X_val)
+        
+        return matthews_corrcoef(y_val, val_pred)
+    
+    study = optuna.create_study(direction='maximize')
+    study.optimize(objective, n_trials=n_trials)
+    return study.best_params
+
+def generate_models(n_input, n_output, optimized_hyperparams=None, model_type='binary', lightweight=None):
+    """Generate models with optimized hyperparameters
+    
+    Args:
+        n_input: Number of input features
+        n_output: Number of output classes
+        optimized_hyperparams: Dictionary of hyperparameters (already filtered for the model type)
+        model_type: 'binary' or 'multiclass'
+        lightweight: If True, only use lightweight models (Decision Tree), else use ensemble models
+    """
+    # Set default lightweight value based on model_type if not specified
+    if lightweight is None:
+        lightweight = (model_type == 'binary')
+        
+    print(f"Generating models for {model_type}, lightweight={lightweight}")
+    print(f"Hyperparams: {optimized_hyperparams}")
+    
+    if optimized_hyperparams is None:
+        # No optimized parameters, use defaults
+        if lightweight:
+            # Lightweight models (primarily for binary classification)
             models = [
                 ('DecisionTreeClassifier', DecisionTreeClassifier(
                 max_depth=244, max_features='sqrt', max_leaf_nodes=850, 
-                random_state=42, class_weight='balanced'))
+                random_state=42, class_weight='balanced')),
             ]
+        else:
+            # More complex models (primarily for multiclass)
+            models = [
+                ('RandomForestClassifier', RandomForestClassifier(random_state=42, class_weight='balanced')),
+                ('ExtraTreesClassifier', ExtraTreesClassifier(random_state=42, class_weight='balanced')),
+            ]
+        return models
+    
+    # Determine which model types to use based on lightweight flag
+    if lightweight:
+        model_types = ['DecisionTreeClassifier']
     else:
-        models = [
-            ('DecisionTreeClassifier', DecisionTreeClassifier(random_state=42, class_weight='balanced')),
-            ('RandomForestClassifier', RandomForestClassifier(random_state=42, class_weight='balanced')),
-            ('ExtraTreesClassifier', ExtraTreesClassifier(random_state=42, class_weight='balanced')),
-            ('Bagging', BaggingClassifier(random_state=42)),
-        ]
-
+        model_types = ['RandomForestClassifier', 'ExtraTreesClassifier']
+    
+    # Create models using the optimized hyperparameters
+    models = []
+    for model_name in model_types:
+        params = optimized_hyperparams.get(model_name, {})
+        if params:
+            print(f"Creating {model_name} with params: {params}")
+            if model_name == 'DecisionTreeClassifier':
+                params['random_state'] = 42
+                params['class_weight'] = 'balanced'
+                models.append((model_name, DecisionTreeClassifier(**params)))
+            elif model_name == 'RandomForestClassifier':
+                params['random_state'] = 42
+                params['class_weight'] = 'balanced'
+                models.append((model_name, RandomForestClassifier(**params)))
+            elif model_name == 'ExtraTreesClassifier':
+                params['random_state'] = 42
+                params['class_weight'] = 'balanced'
+                models.append((model_name, ExtraTreesClassifier(**params)))
+        else:
+            print(f"No params found for {model_name}, skipping")
+    
+    if not models:
+        print("WARNING: No models were created! Falling back to defaults.")
+        return generate_models(n_input, n_output, None, model_type, lightweight)
+    
+    print(f"Created {len(models)} models: {[m[0] for m in models]}")
     return models
 
 def train_and_evaluate_model(name, clf, X_train, y_train, X_val, y_val, X_test, y_test, is_binary=True):
     """Train and evaluate a single model with validation set for model selection"""
-    print(f"Training {name}...")
-    clf.fit(X_train, y_train)
+    print(f"Training {name} with {X_train.shape[0]} samples...")
     
+    try:
+        clf.fit(X_train, y_train)
+    except Exception as e:
+        print(f"Error training {name}: {e}")
+        return None
+
     # Optimize threshold on validation set for binary
     if hasattr(clf, "predict_proba") and is_binary:
         # Use validation set for threshold optimization
@@ -253,10 +330,12 @@ def train_and_evaluate_model(name, clf, X_train, y_train, X_val, y_val, X_test, 
         'val_predictions': clf.predict(X_val) if not is_binary else (clf.predict_proba(X_val)[:, 1] >= best_threshold).astype(int)
     }
 
-
-def process_data_in_chunks(df_windowed, sample_rate, window_size, unique_labels, experiment_results, aggregate_data):
+def process_data_in_chunks(df_windowed, sample_rate, window_size, unique_labels, experiment_results, aggregate_data, optimized_hyperparams=None):
     """Process windowed data in manageable chunks with train/val/test splits"""
-    print(f'--- Processing data - Sample Rate: {sample_rate} - Window: {window_size[0]}min ---')
+    if optimized_hyperparams is None:
+        optimized_hyperparams = {}
+    
+    print(f'--- Processing data - Sample Rate: {sample_rate} - Window: {window_size[0]}min ---', flush=True)
     
     # Create binary labels
     df_windowed = df_windowed.with_columns(
@@ -267,15 +346,15 @@ def process_data_in_chunks(df_windowed, sample_rate, window_size, unique_labels,
     binary_distribution = df_windowed['Binary_Class'].value_counts()
     print(f"Original binary class distribution: {binary_distribution}")
     
-    # Training: 80% * 0.75 = 60%, Validation: 80% * 0.25 = 20%, Test: 20%
+    # First split into train+val/test
     train_val_indices, test_indices = train_test_split(
-        np.arange(len(df_windowed)), test_size=0.25, random_state=42, 
+        np.arange(len(df_windowed)), test_size=0.2, random_state=42, 
         stratify=df_windowed['Binary_Class'].to_numpy()
     )
     
-
+    # Then split train+val into train/val (0.75/0.25 of remaining data = 0.6/0.2 of total)
     train_indices, val_indices = train_test_split(
-        train_val_indices, test_size=0.5, random_state=42,
+        train_val_indices, test_size=0.25, random_state=42,
         stratify=df_windowed['Binary_Class'].to_numpy()[train_val_indices]
     )
     
@@ -311,11 +390,11 @@ def process_data_in_chunks(df_windowed, sample_rate, window_size, unique_labels,
     y_val = y_val_full[val_balanced_indices]
     y_binary_val = y_binary_val_full[val_balanced_indices]
 
-    print("\nDataset split sizes:")
-    print(f"Test dataset: {len(y_binary_test)} samples")
-    print(f"  - Partum: {len(test_partum_indices)}, Non-partum: {len(test_non_partum_indices)}")
-    print(f"Validation dataset: {len(y_binary_val)} samples")
-    print(f"  - Partum: {len(val_partum_indices)}, Non-partum: {len(val_non_partum_indices)}")
+    print("\nDataset split sizes:", flush=True)
+    print(f"Test dataset: {len(y_binary_test)} samples", flush=True)
+    print(f"  - Partum: {len(test_partum_indices)}, Non-partum: {len(test_non_partum_indices)}", flush=True)
+    print(f"Validation dataset: {len(y_binary_val)} samples", flush=True)
+    print(f"  - Partum: {len(val_partum_indices)}, Non-partum: {len(val_non_partum_indices)}", flush=True)
 
     # Get partum samples for multiclass (from full test/val sets)
     partum_mask_test = y_binary_test_full == 1
@@ -334,23 +413,18 @@ def process_data_in_chunks(df_windowed, sample_rate, window_size, unique_labels,
     train_balanced_indices = np.concatenate([train_partum_indices, train_non_partum_indices])
     np.random.shuffle(train_balanced_indices)
 
-    print(f"Training dataset size: {len(train_balanced_indices)} samples")
-    print(f"  - Partum samples: {len(train_partum_indices)}")
-    print(f"  - Non-partum samples: {len(train_non_partum_indices)}")
-    
-    # Extract training data in chunks
-    X_columns = [col for col in df_windowed.columns if col not in ['Class', 'Binary_Class', 'Time']]
+    print(f"Training dataset: {len(train_balanced_indices)} samples", flush=True)
+    print(f"  - Partum: {len(train_partum_indices)}, Non-partum: {len(train_non_partum_indices)}", flush=True)
     
     # Process binary classification
-    print("\n=== STAGE 1: Binary Classification (Partum vs Non-Partum) ===")
-    print(f'{"":<22} Accuracy Precision Recall F1-score   MCC')
+    print("\n=== STAGE 1: Binary Classification (Partum vs Non-Partum) ===", flush=True)
+    print(f'{"":<22} Accuracy Precision Recall F1-score   MCC', flush=True)
     
-    # Extract binary data
+    # Load training data in chunks
     chunk_size = min(get_adaptive_chunk_size(sample_rate), len(train_balanced_indices))
     X_train_binary = []
     y_binary_train = []
     
-    # Load training data in chunks
     for i in range(0, len(train_balanced_indices), chunk_size):
         chunk_indices = train_balanced_indices[i:i+chunk_size]
         X_chunk = df_windowed.select(X_columns).to_numpy()[chunk_indices]
@@ -359,29 +433,34 @@ def process_data_in_chunks(df_windowed, sample_rate, window_size, unique_labels,
         X_train_binary.append(X_chunk)
         y_binary_train.append(y_chunk)
     
-    # Combine chunks for training
     X_train_binary = np.vstack(X_train_binary)
     y_binary_train = np.hstack(y_binary_train)
 
     # Train binary models
     n_input_binary = X_train_binary.shape[1]
-    n_output_binary = 2  # Binary classification
-    binary_models = generate_models(n_input_binary, n_output_binary, X=X_train_binary, y=y_binary_train, light=True)
+    n_output_binary = 2
+    print("Binary HyperParams: ", optimized_hyperparams.get('binary', {}))
+    binary_models = generate_models(
+        n_input_binary, n_output_binary, 
+        optimized_hyperparams=(optimized_hyperparams or {}).get('binary', None),
+        model_type='binary',
+        lightweight=True
+    )
     
-    # Train each binary model
     binary_model_results = []
     for name, clf in binary_models:
         with parallel_backend('loky', n_jobs=4):
+            # Modified to include validation set
             result = train_and_evaluate_model(
                 name, clf, 
                 X_train_binary, y_binary_train,
-                X_val, y_binary_val, 
+                X_val, y_binary_val,  # Validation data
                 X_test, y_binary_test,
                 is_binary=True
             )
             binary_model_results.append(result)
         
-        # Create confusion matrix
+        # Create confusion matrix using test set
         cm = confusion_matrix(y_binary_test, result['predictions'])
         cm_percent = cm / cm.sum(axis=1)[:, np.newaxis] * 100
         
@@ -399,11 +478,14 @@ def process_data_in_chunks(df_windowed, sample_rate, window_size, unique_labels,
         with open(model_path, 'wb') as f:
             pickle.dump(result['model'], f, protocol=pickle.HIGHEST_PROTOCOL)
         
-        # Clean up to save memory
         gc.collect()
     
     # Select best binary model
-    best_binary_result = max(binary_model_results, key=lambda x: x['metrics'][4])  # Sort by MCC
+    if binary_model_results:
+        best_binary_result = max(binary_model_results, key=lambda x: x['metrics'][4])  # Sort by MCC
+    else:
+        print("No binary models were successfully trained.")
+        return experiment_results  # Exit the function early if no results
     
     # Add binary predictions to aggregate data
     aggregate_data['binary_true'].extend(y_binary_test.tolist())
@@ -450,19 +532,26 @@ def process_data_in_chunks(df_windowed, sample_rate, window_size, unique_labels,
     
     # Train multiclass models if we have partum samples
     if len(X_train_partum) > 0 and len(X_test_partum) > 0:
-        print("\n=== STAGE 2: Multiclass Classification (Hours until Partum) ===")
-        print(f'{"":<22} Accuracy Precision Recall F1-score   MCC')
+        print("\n=== STAGE 2: Multiclass Classification (Hours until Partum) ===", flush=True)
+        print(f'{"":<22} Accuracy Precision Recall F1-score   MCC', flush=True)
         
         n_input_multi = X_train_partum.shape[1]
         n_output_multi = len(np.unique(y_train_partum))
+        print("Multiclass HyperParams: ", optimized_hyperparams.get('multiclass', {}))
+        multiclass_models = generate_models(
+            n_input_multi, n_output_multi, 
+            optimized_hyperparams=(optimized_hyperparams or {}).get('multiclass', None),
+            model_type='multiclass',
+            lightweight=False
+        )
         
-        multiclass_models = generate_models(n_input_multi, n_output_multi, X=X_train_partum, y=y_train_partum, light=False)
         multiclass_model_results = []
         
         # Train each multiclass model
         for mc_name, mc_clf in multiclass_models:
             try:
-                with parallel_backend('loky', n_jobs=4):
+                # Reduce n_jobs from 4 to 1 to prevent memory issues
+                with parallel_backend('loky', n_jobs=2):  # Changed from 4 to 1
                     result = train_and_evaluate_model(
                         mc_name, mc_clf,
                         X_train_partum, y_train_partum,
@@ -470,20 +559,25 @@ def process_data_in_chunks(df_windowed, sample_rate, window_size, unique_labels,
                         X_test_partum, y_test_partum,
                         is_binary=False
                     )
-                    multiclass_model_results.append(result)
-                
-                # Save multiclass model
-                model_path = f"experiment_results/models/multiclass/{mc_name}_{sample_rate}_{window_size[0]}min.pkl"
-                with open(model_path, 'wb') as f:
-                    pickle.dump(result['model'], f, protocol=pickle.HIGHEST_PROTOCOL)
-                
-                # Clean up immediately
-                gc.collect()
-                
+                    
+                    # Check if result is None before trying to use it
+                    if result is not None:
+                        multiclass_model_results.append(result)
+                        
+                        # Save multiclass model with fold identifier
+                        model_path = f"experiment_results/models/multiclass/{mc_name}_{sample_rate}_{window_size}min.pkl"
+                        with open(model_path, 'wb') as f:
+                            pickle.dump(result['model'], f, protocol=pickle.HIGHEST_PROTOCOL)
+                    else:
+                        print(f"Training {mc_name} failed, skipping this model.")
+                        
+                    # Clean up immediately
+                    gc.collect()
+                    
             except (MemoryError, RuntimeError) as e:
                 print(f"Memory error training {mc_name}: {e}")
                 continue
-        
+
         # Select best multiclass model if any were trained successfully
         if multiclass_model_results:
             multiclass_result = max(multiclass_model_results, key=lambda x: x['metrics'][4])  # Sort by MCC
@@ -519,7 +613,7 @@ def process_data_in_chunks(df_windowed, sample_rate, window_size, unique_labels,
     # Evaluate combined system if we have both models
     combined_metrics = None
     if best_binary_result and multiclass_result:
-        print("\n=== COMBINED SYSTEM EVALUATION ===")
+        print("\n=== COMBINED SYSTEM EVALUATION ===", flush=True)
         
         # Initialize predictions array with default non-partum class (13)
         y_combined_pred = np.ones_like(y_test) * 13
@@ -646,9 +740,10 @@ def process_data_in_chunks(df_windowed, sample_rate, window_size, unique_labels,
     gc.collect()
     return experiment_results
 
-def process_files_for_config(rate_hz, rate_interval, window_min, window_sec, unique_labels, experiment_results):
+
+def process_files_for_config(rate_hz, rate_interval, window_min, window_sec, unique_labels, experiment_results, optimized_hyperparams=None):   
     """Process all files for one configuration (sample rate and window size)"""
-    print(f"\n--- Testing Sample Rate: {rate_hz}, Window Size: {window_min} minutes ---")
+    print(f"\n--- Testing Sample Rate: {rate_hz}, Window Size: {window_min} minutes ---", flush=True)
     
     all_files = os.listdir('../data/train2')    
     csv_files = list(filter(lambda f: f.endswith('.csv'), all_files))
@@ -668,7 +763,7 @@ def process_files_for_config(rate_hz, rate_interval, window_min, window_sec, uni
     
     # Process each file separately and completely
     for dataset in tqdm(csv_files, desc="Processing files"):
-        print(f"Processing {dataset}...")
+        print(f"Processing {dataset}...", flush=True)
         
         # Load and resample file
         df = pl.read_csv(f'../data/train2/{dataset}', separator=';')
@@ -710,14 +805,15 @@ def process_files_for_config(rate_hz, rate_interval, window_min, window_sec, uni
         # Process in chunks if the combined dataset is getting too large
         chunk_size = get_adaptive_chunk_size(rate_hz)
         if all_results.shape[0] > chunk_size * 2:
-            print(f"Processing accumulated data batch (rows: {all_results.shape[0]})...")
+            print(f"Processing accumulated data batch (rows: {all_results.shape[0]})...", flush=True)
             experiment_results = process_data_in_chunks(
                 all_results, 
                 sample_rate=rate_hz,
                 window_size=(window_min, window_sec),
                 unique_labels=unique_labels,
                 experiment_results=experiment_results,
-                aggregate_data=aggregate_data
+                aggregate_data=aggregate_data,
+                optimized_hyperparams=optimized_hyperparams
             )
             # Reset accumulated results
             all_results = None
@@ -729,14 +825,15 @@ def process_files_for_config(rate_hz, rate_interval, window_min, window_sec, uni
     
     # Process any remaining data
     if all_results is not None and all_results.shape[0] > 0:
-        print(f"Processing final data batch (rows: {all_results.shape[0]})...")
+        print(f"Processing final data batch (rows: {all_results.shape[0]})...", flush=True)
         experiment_results = process_data_in_chunks(
             all_results, 
             sample_rate=rate_hz,
             window_size=(window_min, window_sec),
             unique_labels=unique_labels,
             experiment_results=experiment_results,
-            aggregate_data=aggregate_data
+            aggregate_data=aggregate_data,
+            optimized_hyperparams=optimized_hyperparams
         )
     
     # Create aggregate confusion matrices and plots
@@ -1034,8 +1131,111 @@ def create_aggregate_confusion_matrices(aggregate_data, rate_hz, window_min, uni
             f.write(",".join(map(str, row)) + "\n")
 
 
+def sample_random_chunks(csv_files, num_chunks=5):
+    """Sample random chunks from the dataset"""
+    import random
+    return random.sample(csv_files, min(num_chunks, len(csv_files)))
+
+def optimize_on_random_chunks(rate_hz, rate_interval, window_min, window_sec, unique_labels, num_chunks=5):
+    """Run hyperparameter optimization on randomly selected chunks"""
+    print(f"\n--- Optimizing Hyperparameters for Sample Rate: {rate_hz}, Window Size: {window_min} minutes ---", flush=True)
+    
+    # Get all files
+    all_files = os.listdir('../data/train2')    
+    csv_files = list(filter(lambda f: f.endswith('.csv'), all_files))
+    
+    # Sample random chunks
+    import random
+    random_chunks = random.sample(csv_files, min(num_chunks, len(csv_files)))
+    print(f"Selected {len(random_chunks)} random chunks for optimization: {random_chunks}", flush=True)
+    
+    # Process and combine these chunks
+    combined_data = None
+    
+    for dataset in random_chunks:
+        print(f"Processing {dataset} for optimization...", flush=True)
+        
+        # Load and process file (same as in process_files_for_config)
+        df = pl.read_csv(f'../data/train2/{dataset}', separator=';')
+        df = df.with_columns(pl.col('Time').str.strptime(pl.Datetime, format='%Y-%m-%d %H:%M:%S.%3f'))
+        
+        # Resample and window (same as in your existing code)
+        df_resampled = df.set_sorted('Time').group_by_dynamic('Time', every=rate_interval).agg(
+            pl.col('Acc_X (mg)').median(),
+            pl.col('Acc_Y (mg)').median(),
+            pl.col('Acc_Z (mg)').median(),
+            pl.col('Temperature (C)').median(),
+            pl.col('Class').mode().first()
+        )
+        
+        # Scale and window
+        df_resampled = df_resampled.with_columns(
+            pl.col('Acc_X (mg)').map_batches(lambda x: pl.Series(minmax_scale(x))),
+            pl.col('Acc_Y (mg)').map_batches(lambda x: pl.Series(minmax_scale(x))),
+            pl.col('Acc_Z (mg)').map_batches(lambda x: pl.Series(minmax_scale(x)))
+        )
+        
+        df_windowed = dataframe_shift(df_resampled, 
+            columns=['Acc_X (mg)', 'Acc_Y (mg)', 'Acc_Z (mg)', 'Temperature (C)'], 
+            window_seconds=window_sec, sample_rate_hz=rate_hz)
+        
+        # Add to combined data
+        if combined_data is None:
+            combined_data = df_windowed
+        else:
+            combined_data = pl.concat([combined_data, df_windowed])
+        
+        del df, df_resampled, df_windowed
+        gc.collect()
+    
+    # Create binary labels and split data
+    combined_data = combined_data.with_columns(
+        pl.when(pl.col('Class') < 13).then(1).otherwise(0).alias('Binary_Class')
+    )
+    
+    # Split for training/validation
+    X_columns = [col for col in combined_data.columns if col not in ['Class', 'Binary_Class', 'Time']]
+    train_indices, val_indices = train_test_split(
+        np.arange(len(combined_data)), test_size=0.25, random_state=42, 
+        stratify=combined_data['Binary_Class'].to_numpy()
+    )
+    
+    # Extract data
+    X_train = combined_data.select(X_columns).to_numpy()[train_indices]
+    y_binary_train = combined_data['Binary_Class'].to_numpy()[train_indices]
+    y_multi_train = combined_data['Class'].to_numpy()[train_indices]
+    
+    X_val = combined_data.select(X_columns).to_numpy()[val_indices]
+    y_binary_val = combined_data['Binary_Class'].to_numpy()[val_indices]
+    y_multi_val = combined_data['Class'].to_numpy()[val_indices]
+    
+    # Optimize hyperparameters
+    binary_hyperparams = {}
+    for model_type in ['DecisionTreeClassifier']:
+        binary_hyperparams[model_type] = optimize_hyperparameters(
+            X_train, y_binary_train, X_val, y_binary_val, model_type, is_binary=True)
+    
+    # Optimize multiclass if we have partum samples
+    multiclass_hyperparams = {}
+    partum_train = y_binary_train == 1
+    partum_val = y_binary_val == 1
+    if np.sum(partum_train) > 0 and np.sum(partum_val) > 0:
+        for model_type in ['RandomForestClassifier', 'ExtraTreesClassifier']:
+            multiclass_hyperparams[model_type] = optimize_hyperparameters(
+                X_train[partum_train], y_multi_train[partum_train], 
+                X_val[partum_val], y_multi_val[partum_val], 
+                model_type, is_binary=False)
+
+    # Save and return
+    hyperparams = {'binary': binary_hyperparams, 'multiclass': multiclass_hyperparams}
+    with open(f"experiment_results/hyperparams_{rate_hz}_{window_min}min.json", 'w') as f:
+        json.dump(hyperparams, f, indent=2)
+        
+    return hyperparams
+
 def run_experiment():
     experiment_results = []
+
     
     # Process each combination of sample rate and window size
     for rate_hz, rate_interval in SAMPLE_RATES:
@@ -1043,9 +1243,13 @@ def run_experiment():
         sample_df = pl.read_csv(f'../data/train2/{os.listdir("../data/train2")[0]}', separator=';')
         unique = sample_df.unique(subset=['Class'], maintain_order=True)
         unique_labels = sorted(unique['Class'].to_list())
-        print("Unique classes found:", unique_labels)
+        print("Unique classes found:", unique_labels, flush=True)
         
         for window_min, window_sec in WINDOW_SIZES:
+            # First run hyperparameter optimization on random chunks
+            optimized_hyperparams = optimize_on_random_chunks(
+                rate_hz, rate_interval, window_min, window_sec, unique_labels)
+            
             # Process one file at a time for this combination
             experiment_results = process_files_for_config(
                 rate_hz, 
@@ -1053,16 +1257,17 @@ def run_experiment():
                 window_min, 
                 window_sec, 
                 unique_labels, 
-                experiment_results
+                experiment_results, 
+                optimized_hyperparams
             )
             
             # Save intermediate results after each window size
-            print("Saving intermediate results...")
+            print("Saving intermediate results...", flush=True)
             with open(f'experiment_results/results_{rate_hz}_{window_min}min.json', 'w') as f:
                 json.dump(experiment_results, f)
     
     # Save final results
-    print("Saving final results...")
+    print("Saving final results...", flush=True)
     with open('experiment_results/results.json', 'w') as f:
         json.dump(experiment_results, f)
     
@@ -1109,28 +1314,29 @@ def run_experiment():
         with open('experiment_results/best_configurations.json', 'w') as f:
             json.dump(best_configs, f, indent=2)
         
-        print("Best configurations saved to experiment_results/best_configurations.json")
+        print("Best configurations saved to experiment_results/best_configurations.json", flush=True)
         
     except Exception as e:
-        print(f"Error creating best configurations summary: {e}")
+        print(f"Error creating best configurations summary: {e}", flush=True)
         import traceback
         traceback.print_exc()
     
-    print("Done!")
+    print("Done!", flush=True)
 
 if __name__ == "__main__":
     start_time = datetime.now()
-    print(f"Experiment started at: {start_time}")
+    print(f"Experiment started at: {start_time}", flush=True)
     
     try:
         run_experiment()
     except Exception as e:
-        print(f"Error in experiment: {e}")
+        print(f"Error in experiment: {e}", flush=True)
         import traceback
         traceback.print_exc()
     
     end_time = datetime.now()
     duration = end_time - start_time
-    print(f"Experiment completed at: {end_time}")
-    print(f"Total duration: {duration}")
+    print(f"Experiment completed at: {end_time}", flush=True)
+    print(f"Total duration: {duration}", flush=True)
+
 
